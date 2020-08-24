@@ -49,9 +49,9 @@ const Profile: FC = () => {
   useEffect(() => {
     async function getUserData() {
       try {
-        const response = await api.get<ResponseTemp>('/me');
+        const response = await api.get<ProfileCredentials>('/me');
 
-        const { user } = response.data;
+        const user = response.data;
 
         setInitialData(user);
       } catch (err) {
