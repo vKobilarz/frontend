@@ -20,6 +20,7 @@ import { Container, Content } from './styles';
 import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
+import { useAuth } from '../../hooks/AuthConfig';
 
 interface ProfileCredentials {
   name: string;
@@ -43,6 +44,7 @@ interface ResponseTemp {
 const Profile: FC = () => {
   const formRef = useRef<FormHandles>(null);
   const history = useHistory();
+  const { setUserName } = useAuth();
 
   const [initialData, setInitialData] = useState<ProfileCredentials>();
 
@@ -107,6 +109,8 @@ const Profile: FC = () => {
           longitude: Number(data.longitude),
           phone: data.phone,
         });
+
+        setUserName(data.name);
 
         toast.success('Usuário atualizado com sucesso!');
         history.push('/ocurrences');

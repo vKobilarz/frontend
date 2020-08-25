@@ -34,6 +34,7 @@ interface AuthContextState {
   user: User;
   signIn(credentials: SignInCredentials): Promise<void>;
   signUp(credentials: SignUpCredentials): Promise<void>;
+  setUserName(name: string): void;
   signOut(): void;
 }
 
@@ -57,7 +58,12 @@ const AuthContext = createContext<AuthContextState>({} as AuthContextState);
 
 export const AuthProvider: FC = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
-    const token = localStorage.getItem('@GoBarber:token');
+    const baseUrl = localStorage.getItem('@Community:baseUrl');
+
+    api.defaults.baseURL =
+      baseUrl || 'http://solidarity-community-02.herokuapp.com';
+
+    const token = localStorage.getItem('@Community:token');
 
     if (token) {
       // @ts-ignore
@@ -88,19 +94,24 @@ export const AuthProvider: FC = ({ children }) => {
 
     const { token } = response.data;
 
-    localStorage.setItem('@GoBarber:token', token);
+    localStorage.setItem('@Community:token', token);
+    try {
+      // @ts-ignore
+      const decodedUser: DecodedUser = decode(token);
 
-    // @ts-ignore
-    const decodedUser: DecodedUser = decode(token);
+      console.log(decodedUser);
 
-    const user: User = {
-      id: String(decodedUser._id),
-      name: decodedUser.name,
-    };
+      const user: User = {
+        id: String(decodedUser._id),
+        name: decodedUser.name,
+      };
 
-    api.defaults.headers.authorization = token;
+      api.defaults.headers.authorization = token;
 
-    setData({ token, user });
+      setData({ token, user });
+    } catch (e) {
+      console.log(e);
+    }
   }, []);
 
   const signUp = useCallback(
@@ -141,12 +152,17 @@ export const AuthProvider: FC = ({ children }) => {
   );
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@GoBarber:token');
+    localStorage.removeItem('@Community:token');
 
     api.defaults.headers.authorization = '';
 
     setData({} as AuthState);
   }, []);
+
+  const setUserName = useCallback((name: string) => {
+    setData({ ...data, user: { ...data.user, name } });
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{
@@ -155,6 +171,7 @@ export const AuthProvider: FC = ({ children }) => {
         signUp,
         user: data.user,
         isAuthenticated: !!data.token,
+        setUserName,
       }}
     >
       {children}

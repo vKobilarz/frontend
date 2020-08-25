@@ -33,6 +33,7 @@ const SetupUrl: FC = () => {
 
         await schema.validate(data, { abortEarly: false });
 
+        localStorage.setItem('@Community:baseUrl', data.url);
         api.defaults.baseURL = data.url;
         toast.success('URL definida com sucesso!');
         history.push('/login');
