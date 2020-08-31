@@ -137,7 +137,7 @@ const Profile: FC = () => {
         }
       }
     },
-    [history],
+    [history, setUserName],
   );
 
   return (

@@ -159,9 +159,12 @@ export const AuthProvider: FC = ({ children }) => {
     setData({} as AuthState);
   }, []);
 
-  const setUserName = useCallback((name: string) => {
-    setData({ ...data, user: { ...data.user, name } });
-  }, []);
+  const setUserName = useCallback(
+    (name: string) => {
+      setData({ ...data, user: { ...data.user, name } });
+    },
+    [data],
+  );
 
   return (
     <AuthContext.Provider
