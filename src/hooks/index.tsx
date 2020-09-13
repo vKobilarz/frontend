@@ -7,13 +7,16 @@ import GlobalStyle from '../styles/global';
 import { AuthProvider } from './AuthConfig';
 
 import 'react-toastify/dist/ReactToastify.css';
+import { OcurrencesProvider } from './OcurrencesContext';
 
 const AppProvider: FC = ({ children }) => {
   return (
     <>
       <GlobalStyle />
       <ToastContainer />
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <OcurrencesProvider>{children}</OcurrencesProvider>
+      </AuthProvider>
     </>
   );
 };

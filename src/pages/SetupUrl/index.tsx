@@ -63,7 +63,13 @@ const SetupUrl: FC = () => {
       <Content>
         <AnimationContainer>
           <h1>Comunidade Solidária</h1>
-          <Form ref={formRef} onSubmit={handleSubmit}>
+          <Form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            initialData={{
+              url: 'https://solidarity-community-02.herokuapp.com',
+            }}
+          >
             <h1>Insira a URL</h1>
             <Input name="url" icon={FaServer} placeholder="URL" />
             <Button type="submit">Acessar</Button>
