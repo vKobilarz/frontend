@@ -42,6 +42,18 @@ const NewOcurrence: FC = () => {
       try {
         formRef.current?.setErrors({});
 
+        const [day, month, rest] = formData.ocurred_at.split('/');
+
+        const ocurred_at = new Date(`${month}/${day}/${rest}`);
+
+        const data = {
+          ...formData,
+          ...newOcurrencePosition,
+          ocurred_at,
+          anonymous,
+          type,
+        };
+
         const schema = Yup.object().shape({
           description: Yup.string().required('Descrição obrigatória'),
           type: Yup.string().required(),
@@ -57,18 +69,6 @@ const NewOcurrence: FC = () => {
             .typeError('Formato de data inválida')
             .required('Data de ocorrência obrigatória'),
         });
-
-        const [day, month, rest] = formData.ocurred_at.split('/');
-
-        const ocurred_at = new Date(`${month}/${day}/${rest}`);
-
-        const data = {
-          ...formData,
-          ...newOcurrencePosition,
-          ocurred_at,
-          anonymous,
-          type,
-        };
 
         await schema.validate(data, { abortEarly: false });
 

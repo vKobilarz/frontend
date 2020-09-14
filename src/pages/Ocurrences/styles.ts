@@ -37,6 +37,7 @@ export const OcurrencesContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow-y: hidden;
 `;
 
 export const OcurrencesContent = styled.div`

@@ -3,10 +3,30 @@ import { darken } from 'polished';
 
 export const Container = styled.div`
   flex: 1;
-  margin-right: 16px;
+  padding-right: 8px;
+  margin-right: 8px;
 
   display: flex;
   flex-direction: column;
+  height: 600px;
+  overflow-y: auto;
+
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #404040;
+    border-radius: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: ${darken(0.1, '#404040')};
+  }
 `;
 
 interface OcurrenceItemProps {
