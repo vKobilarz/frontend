@@ -39,6 +39,7 @@ export interface Ocurrence {
   anonymous: boolean;
   user_name?: string;
   user_id?: string;
+  number?: string;
   selected: boolean;
 }
 

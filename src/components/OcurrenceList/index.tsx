@@ -38,6 +38,10 @@ const OcurrenceList: FC<OcurrenceList> = ({ ocurrences, setSelectedItem }) => {
 
           <OcurrenceRow>
             <p>Bairro: {ocurrence.neighborhood}</p>
+            {ocurrence.number && <p>Número: {ocurrence.number}</p>}
+          </OcurrenceRow>
+
+          <OcurrenceRow>
             <p>Rua: {ocurrence.street}</p>
           </OcurrenceRow>
 
