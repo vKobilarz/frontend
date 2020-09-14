@@ -18,6 +18,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../../services/api';
 import { useOcurrences } from '../../hooks/OcurrencesContext';
+import { useAuth } from '../../hooks/AuthConfig';
 
 interface OcurrenceData {
   description: string;
@@ -35,6 +36,7 @@ const NewOcurrence: FC = () => {
   const [anonymous, setAnonymous] = useState(false);
   const formRef = useRef<FormHandles>(null);
   const history = useHistory();
+  const { signOut } = useAuth();
   const { newOcurrencePosition } = useOcurrences();
 
   const handleSubmit = useCallback(
@@ -71,23 +73,31 @@ const NewOcurrence: FC = () => {
         });
 
         await schema.validate(data, { abortEarly: false });
+        try {
+          await api.post('/ocurrences', {
+            description: data.description,
+            zip_code: data.zipCode,
+            neighborhood: data.neighborhood,
+            street: data.street,
+            complement: data.complement,
+            ocurred_at: data.ocurred_at.getTime(),
+            type: data.type,
+            anonymous: data.anonymous,
+            city: data.city,
+            longitude: data.longitude,
+            latitude: data.latitude,
+          });
 
-        await api.post('/ocurrences', {
-          description: data.description,
-          zip_code: data.zipCode,
-          neighborhood: data.neighborhood,
-          street: data.street,
-          complement: data.complement,
-          ocurred_at: data.ocurred_at.getTime(),
-          type: data.type,
-          anonymous: data.anonymous,
-          city: data.city,
-          longitude: data.longitude,
-          latitude: data.latitude,
-        });
+          toast.success('Ocorrência cadastrada com sucesso!');
+          history.push('/ocurrences');
+        } catch (err) {
+          if (err?.response?.status === 401) {
+            toast.error('Realize o login para realizar esta requisição.');
 
-        toast.success('Ocorrência cadastrada com sucesso!');
-        history.push('/ocurrences');
+            signOut();
+            history.push('/login');
+          }
+        }
       } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const errors = getValidationErrors(err);

@@ -44,7 +44,7 @@ interface ResponseTemp {
 const NewOcurrence: FC = () => {
   const formRef = useRef<FormHandles>(null);
   const history = useHistory();
-  const { setUserName } = useAuth();
+  const { setUserName, signOut } = useAuth();
 
   const [initialData, setInitialData] = useState<ProfileCredentials>();
 
@@ -122,8 +122,10 @@ const NewOcurrence: FC = () => {
         } else {
           if (err.response.status === 400) {
             toast.error(err.response.data.error);
-          } else if (err.response.status === 401) {
+          } else if (err?.response?.status === 401) {
             toast.error('Realize o login para realizar esta requisição.');
+
+            signOut();
             history.push('/login');
           } else if (err.response.status === 409) {
             toast.error(`O e-mail ${data.email} já está em uso.`);

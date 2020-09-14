@@ -9,6 +9,9 @@ import React, {
 import formatDate from 'dateformat';
 
 import api from '../services/api';
+import { toast } from 'react-toastify';
+import { useHistory } from 'react-router-dom';
+import { useAuth } from './AuthConfig';
 
 export interface Ocurrence {
   _id: string;
@@ -118,6 +121,9 @@ function getFormattedDate(date: Date): string {
 }
 
 export const OcurrencesProvider: FC = ({ children }) => {
+  const history = useHistory();
+  const { signOut } = useAuth();
+
   const [ocurrences, setOcurrences] = useState<Ocurrence[]>([]);
   const [newOcurrencePosition, setNewOcurrencePosition] = useState<Position>(
     () => {
@@ -141,17 +147,26 @@ export const OcurrencesProvider: FC = ({ children }) => {
   }, [newOcurrencePosition]);
 
   async function getOcurrences() {
-    const { data } = await api.get<OcurrenceRequest[]>('ocurrences');
+    try {
+      const { data } = await api.get<OcurrenceRequest[]>('ocurrences');
 
-    const formattedOcurrences: Ocurrence[] = data.map(d => ({
-      ...d,
-      formattedType: formattedType[d.type],
-      ocurred_at: new Date(d.ocurred_at),
-      formattedDate: getFormattedDate(new Date(d.ocurred_at)),
-      selected: false,
-    }));
+      const formattedOcurrences: Ocurrence[] = data.map(d => ({
+        ...d,
+        formattedType: formattedType[d.type],
+        ocurred_at: new Date(d.ocurred_at),
+        formattedDate: getFormattedDate(new Date(d.ocurred_at)),
+        selected: false,
+      }));
 
-    setOcurrences(formattedOcurrences);
+      setOcurrences(formattedOcurrences);
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        toast.error('Realize o login para realizar esta requisição.');
+
+        signOut();
+        history.push('/login');
+      }
+    }
   }
 
   function createOcurrence({ latitude, longitude }: Position) {
