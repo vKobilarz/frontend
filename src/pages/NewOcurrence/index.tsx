@@ -1,7 +1,11 @@
 import React, { FC, useCallback, useRef, useState } from 'react';
 import { FiArrowLeft } from 'react-icons/fi';
 import { FaRoute, FaCity } from 'react-icons/fa';
-import { AiOutlineAppstoreAdd, AiOutlineClockCircle } from 'react-icons/ai';
+import {
+  AiOutlineAppstoreAdd,
+  AiOutlineClockCircle,
+  AiOutlineFieldNumber,
+} from 'react-icons/ai';
 import { MdConfirmationNumber, MdDescription } from 'react-icons/md';
 import { GiModernCity } from 'react-icons/gi';
 import { FormHandles } from '@unform/core';
@@ -26,7 +30,7 @@ interface OcurrenceData {
   city: string;
   neighborhood: string;
   street: string;
-  number: string;
+  number?: string;
   ocurred_at: string;
   complement?: string;
 }
@@ -67,6 +71,7 @@ const NewOcurrence: FC = () => {
           latitude: Yup.number().required('Latitude obrigatória'),
           longitude: Yup.number().required('Longitude obrigatória'),
           complement: Yup.string(),
+          number: Yup.string(),
           ocurred_at: Yup.date()
             .typeError('Formato de data inválida')
             .required('Data de ocorrência obrigatória'),
@@ -84,6 +89,7 @@ const NewOcurrence: FC = () => {
             type: data.type,
             anonymous: data.anonymous,
             city: data.city,
+            number: data.number,
             longitude: data.longitude,
             latitude: data.latitude,
           });
@@ -119,7 +125,7 @@ const NewOcurrence: FC = () => {
         }
       }
     },
-    [history, anonymous, newOcurrencePosition, type],
+    [history, anonymous, newOcurrencePosition, type, signOut],
   );
 
   return (
@@ -143,6 +149,11 @@ const NewOcurrence: FC = () => {
           <Input name="city" icon={GiModernCity} placeholder="Cidade" />
           <Input name="neighborhood" icon={FaCity} placeholder="Bairro" />
           <Input name="street" icon={MdConfirmationNumber} placeholder="Rua" />
+          <Input
+            name="number"
+            icon={AiOutlineFieldNumber}
+            placeholder="Número"
+          />
           <Input
             name="complement"
             icon={AiOutlineAppstoreAdd}

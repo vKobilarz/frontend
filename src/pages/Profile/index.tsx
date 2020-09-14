@@ -139,7 +139,7 @@ const NewOcurrence: FC = () => {
         }
       }
     },
-    [history, setUserName],
+    [history, setUserName, signOut],
   );
 
   return (
