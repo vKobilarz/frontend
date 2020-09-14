@@ -5,17 +5,22 @@ import { LeafletMouseEvent } from 'leaflet';
 import { useOcurrences } from '../../hooks/OcurrencesContext';
 import selectedMarker from './markers/SelectedMarker';
 import marker from './markers/Marker';
+import { useHistory } from 'react-router-dom';
 
 const Map: FC = () => {
+  const history = useHistory();
+
   const [initialPosition, setInitialPosition] = useState<[number, number]>([
     0,
     0,
   ]);
 
-  const { ocurrences } = useOcurrences();
+  const { ocurrences, createOcurrence } = useOcurrences();
 
   function handleMapClick({ latlng }: LeafletMouseEvent) {
-    console.log(latlng);
+    createOcurrence({ latitude: latlng.lat, longitude: latlng.lng });
+
+    history.push('/ocurrences/new');
   }
 
   useEffect(() => {

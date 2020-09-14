@@ -1,4 +1,10 @@
-import React, { createContext, FC, useContext, useState } from 'react';
+import React, {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 import formatDate from 'dateformat';
 
@@ -7,7 +13,16 @@ import api from '../services/api';
 export interface Ocurrence {
   _id: string;
   description: string;
-  type: string;
+  type:
+    | 'assalto'
+    | 'agressao'
+    | 'covid'
+    | 'pertubacao'
+    | 'homicidio'
+    | 'atividade_suspeita'
+    | 'acidente'
+    | 'desaparecimento'
+    | 'animal_perdido';
   formattedType: string;
   ocurred_at: Date;
   formattedDate: string;
@@ -19,14 +34,24 @@ export interface Ocurrence {
   street: string;
   complement: string;
   anonymous: boolean;
-  name?: string;
+  user_name?: string;
+  user_id?: string;
   selected: boolean;
 }
 
 export interface OcurrenceRequest {
   _id: string;
   description: string;
-  type: string;
+  type:
+    | 'assalto'
+    | 'agressao'
+    | 'covid'
+    | 'pertubacao'
+    | 'homicidio'
+    | 'atividade_suspeita'
+    | 'acidente'
+    | 'desaparecimento'
+    | 'animal_perdido';
   ocurred_at: number;
   zip_code: string;
   latitude: number;
@@ -36,19 +61,39 @@ export interface OcurrenceRequest {
   street: string;
   complement: string;
   anonymous: boolean;
-  name?: string;
+  user_name?: string;
+  user_id?: string;
+}
+
+interface Position {
+  latitude: number;
+  longitude: number;
 }
 
 interface OcurrencesContextState {
   ocurrences: Ocurrence[];
+  newOcurrencePosition: Position;
 
   getOcurrences(): Promise<void>;
   setSelectedItem(ocurrence: Ocurrence): void;
+  createOcurrence(position: Position): void;
 }
 
-interface FormattedType {
-  [key: string]: string;
+enum Options {
+  ASSALTO = 'assalto',
+  AGRESSAO = 'agressao',
+  COVID = 'covid',
+  PERTUBACAO = 'pertubacao',
+  HOMICIDIO = 'homicidio',
+  ATIVIDADE_SUSPEITA = 'atividade_suspeita',
+  ACIDENTE = 'acidente',
+  DESAPARECIMENTO = 'desaparecimento',
+  ANIMAL_PERDIDO = 'animal_perdido',
 }
+
+type FormattedType = {
+  [key in Options]: string;
+};
 
 const formattedType: FormattedType = {
   assalto: 'Assalto',
@@ -74,6 +119,26 @@ function getFormattedDate(date: Date): string {
 
 export const OcurrencesProvider: FC = ({ children }) => {
   const [ocurrences, setOcurrences] = useState<Ocurrence[]>([]);
+  const [newOcurrencePosition, setNewOcurrencePosition] = useState<Position>(
+    () => {
+      const ocurrenceString = localStorage.getItem('@Community:position');
+
+      if (!ocurrenceString) {
+        return { latitude: 0, longitude: 0 };
+      }
+
+      const ocurrencePosition: Position = JSON.parse(ocurrenceString);
+
+      return ocurrencePosition;
+    },
+  );
+
+  useEffect(() => {
+    localStorage.setItem(
+      '@Community:position',
+      JSON.stringify(newOcurrencePosition),
+    );
+  }, [newOcurrencePosition]);
 
   async function getOcurrences() {
     const { data } = await api.get<OcurrenceRequest[]>('ocurrences');
@@ -87,6 +152,15 @@ export const OcurrencesProvider: FC = ({ children }) => {
     }));
 
     setOcurrences(formattedOcurrences);
+  }
+
+  function createOcurrence({ latitude, longitude }: Position) {
+    const position: Position = {
+      latitude,
+      longitude,
+    };
+
+    setNewOcurrencePosition(position);
   }
 
   function setSelectedItem(ocurrence: Ocurrence) {
@@ -111,7 +185,13 @@ export const OcurrencesProvider: FC = ({ children }) => {
 
   return (
     <OcurrencesContext.Provider
-      value={{ ocurrences, getOcurrences, setSelectedItem }}
+      value={{
+        ocurrences,
+        newOcurrencePosition,
+        getOcurrences,
+        setSelectedItem,
+        createOcurrence,
+      }}
     >
       {children}
     </OcurrencesContext.Provider>

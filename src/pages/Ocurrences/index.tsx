@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 
 import { FiPower } from 'react-icons/fi';
 import { Link } from 'react-router-dom';

@@ -7,6 +7,7 @@ import SignUp from '../pages/SignUp';
 import Ocurrences from '../pages/Ocurrences';
 import Profile from '../pages/Profile';
 import ForgotPassword from '../pages/ForgotPassword';
+import NewOcurrence from '../pages/NewOcurrence';
 
 import Route from './Route';
 
@@ -17,7 +18,8 @@ const Routes: FC = () => (
     <Route path="/signup" component={SignUp} />
     <Route path="/forgot-password" component={ForgotPassword} />
 
-    <Route path="/ocurrences" component={Ocurrences} isPrivate />
+    <Route path="/ocurrences" component={Ocurrences} exact isPrivate />
+    <Route path="/ocurrences/new" component={NewOcurrence} isPrivate />
     <Route path="/profile" component={Profile} isPrivate />
   </Switch>
 );

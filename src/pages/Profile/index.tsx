@@ -41,7 +41,7 @@ interface ResponseTemp {
   user: ProfileCredentials;
 }
 
-const Profile: FC = () => {
+const NewOcurrence: FC = () => {
   const formRef = useRef<FormHandles>(null);
   const history = useHistory();
   const { setUserName } = useAuth();
@@ -199,4 +199,4 @@ const Profile: FC = () => {
   );
 };
 
-export default Profile;
+export default NewOcurrence;

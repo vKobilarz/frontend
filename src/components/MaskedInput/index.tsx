@@ -26,8 +26,6 @@ const Input: FC<InputProps> = ({ name, icon: Icon, ...props }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
 
-  console.log(inputRef.current);
-
   useEffect(() => {
     registerField({
       name: fieldName,

@@ -47,9 +47,9 @@ const OcurrenceList: FC<OcurrenceList> = ({ ocurrences, setSelectedItem }) => {
             </OcurrenceRow>
           )}
 
-          {!ocurrence.anonymous && ocurrence.name && (
+          {!ocurrence.anonymous && ocurrence.user_name && (
             <OcurrenceRow>
-              <p>Responsável: {ocurrence.name}</p>
+              <p>Responsável: {ocurrence.user_name}</p>
             </OcurrenceRow>
           )}
         </OcurrenceItem>

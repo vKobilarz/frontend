@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { darken } from 'polished';
 
 export const Container = styled.div`
   flex: 1;
@@ -20,6 +21,7 @@ export const OcurrenceItem = styled.button<OcurrenceItemProps>`
   padding: 16px;
   line-height: 1.7;
   color: #f4ede8;
+  transition: background-color 0.2s;
 
   & + button {
     margin-top: 8px;
@@ -29,6 +31,7 @@ export const OcurrenceItem = styled.button<OcurrenceItemProps>`
     selected &&
     css`
       background-color: #ff9000;
+      border: 3px solid ${darken(0.1, '#ff9000')};
     `}
 `;
 
