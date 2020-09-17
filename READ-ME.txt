@@ -1,0 +1,6 @@
+Todos os arquivos fora de /src são gerados por framework;
+
+Em /src, os seguintes itens foram gerados por framework:
+* react-app-env.d.ts
+* setupTests.ts
+* index.tsx
