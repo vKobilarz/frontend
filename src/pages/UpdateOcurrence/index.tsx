@@ -14,7 +14,6 @@ import * as Yup from 'yup';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 import Input from '../../components/Input';
-import MaskedInput from '../../components/MaskedInput';
 import Button from '../../components/Button';
 
 import { Container, Content } from './styles';
