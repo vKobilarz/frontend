@@ -1,20 +1,14 @@
 import React, { FC, useEffect } from 'react';
 
-import { FiPower } from 'react-icons/fi';
-import { Link } from 'react-router-dom';
-
 import Map from '../../components/Map';
+import Header from '../../components/Header';
 import OcurrenceList from '../../components/OcurrenceList';
 
-import { useAuth } from '../../hooks/AuthConfig';
 import { useOcurrences } from '../../hooks/OcurrencesContext';
 import { FiInfo } from 'react-icons/fi';
 
 import {
   Container,
-  Header,
-  HeaderContent,
-  Profile,
   OcurrencesContainer,
   OcurrencesContent,
   MapContainer,
@@ -23,7 +17,6 @@ import {
 } from './styles';
 
 const Ocurrences: FC = () => {
-  const { signOut, user } = useAuth();
   const { ocurrences, getOcurrences, setSelectedItem } = useOcurrences();
 
   useEffect(() => {
@@ -37,21 +30,7 @@ const Ocurrences: FC = () => {
 
   return (
     <Container>
-      <Header>
-        <HeaderContent>
-          <Profile>
-            <div>
-              <span>Bem vindo,</span>
-              <Link to={'/profile'}>
-                <strong>{user.name}</strong>
-              </Link>
-            </div>
-          </Profile>
-          <button type="button" onClick={signOut}>
-            <FiPower />
-          </button>
-        </HeaderContent>
-      </Header>
+      <Header />
       <MapInfoContainer>
         <MapInfoContent>
           <FiInfo />

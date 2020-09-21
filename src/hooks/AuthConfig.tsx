@@ -41,12 +41,14 @@ interface AuthContextState {
 interface User {
   id: string;
   name: string;
+  role: 'user' | 'admin';
 }
 
 interface DecodedUser {
   [key: string]: string;
   _id: string;
   name: string;
+  role: 'user' | 'admin';
 }
 
 interface AuthState {
@@ -73,9 +75,11 @@ export const AuthProvider: FC = ({ children }) => {
         return {} as AuthState;
       }
 
+      console.log(decodedUser);
       const user: User = {
         id: String(decodedUser._id),
         name: decodedUser.name,
+        role: decodedUser.role,
       };
 
       api.defaults.headers.authorization = token;
@@ -99,11 +103,10 @@ export const AuthProvider: FC = ({ children }) => {
       // @ts-ignore
       const decodedUser: DecodedUser = decode(token);
 
-      console.log(decodedUser);
-
       const user: User = {
         id: String(decodedUser._id),
         name: decodedUser.name,
+        role: decodedUser.role,
       };
 
       api.defaults.headers.authorization = token;

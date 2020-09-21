@@ -79,8 +79,11 @@ interface OcurrencesContextState {
   newOcurrencePosition: Position;
 
   getOcurrences(): Promise<void>;
+  getMyOcurrences(): Promise<void>;
   setSelectedItem(ocurrence: Ocurrence): void;
+  setUniqueSelectedItem(ocurrence: Ocurrence): void;
   createOcurrence(position: Position): void;
+  deleteOcurrence(ocurrence: Ocurrence): Promise<void>;
 }
 
 enum Options {
@@ -170,6 +173,29 @@ export const OcurrencesProvider: FC = ({ children }) => {
     }
   }
 
+  async function getMyOcurrences() {
+    try {
+      const { data } = await api.get<OcurrenceRequest[]>('ocurrences/me');
+
+      const formattedOcurrences: Ocurrence[] = data.map(d => ({
+        ...d,
+        formattedType: formattedType[d.type],
+        ocurred_at: new Date(d.ocurred_at),
+        formattedDate: getFormattedDate(new Date(d.ocurred_at)),
+        selected: false,
+      }));
+
+      setOcurrences(formattedOcurrences);
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        toast.error('Realize o login para realizar esta requisição.');
+
+        signOut();
+        history.push('/login');
+      }
+    }
+  }
+
   function createOcurrence({ latitude, longitude }: Position) {
     const position: Position = {
       latitude,
@@ -199,6 +225,42 @@ export const OcurrencesProvider: FC = ({ children }) => {
     setOcurrences(updatedOcurrences);
   }
 
+  function setUniqueSelectedItem(ocurrence: Ocurrence) {
+    const selectedOcurrenceIndex = ocurrences.findIndex(
+      oc => oc._id === ocurrence._id,
+    );
+
+    if (selectedOcurrenceIndex === -1) {
+      return;
+    }
+
+    const updatedOcurrences: Ocurrence[] = [...ocurrences].map((o, i) => ({
+      ...o,
+      selected: i === selectedOcurrenceIndex,
+    }));
+
+    setOcurrences(updatedOcurrences);
+  }
+
+  async function deleteOcurrence(ocurrence: Ocurrence) {
+    try {
+      await api.delete(`/ocurrences/${ocurrence._id}`);
+
+      toast.success(
+        `Ocorrência "${ocurrence.description}" removida com sucesso!`,
+      );
+
+      setOcurrences(ocurrences.filter(o => o._id !== ocurrence._id));
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        toast.error('Realize o login para realizar esta requisição.');
+
+        signOut();
+        history.push('/login');
+      }
+    }
+  }
+
   return (
     <OcurrencesContext.Provider
       value={{
@@ -206,7 +268,10 @@ export const OcurrencesProvider: FC = ({ children }) => {
         newOcurrencePosition,
         getOcurrences,
         setSelectedItem,
+        setUniqueSelectedItem,
         createOcurrence,
+        getMyOcurrences,
+        deleteOcurrence,
       }}
     >
       {children}
