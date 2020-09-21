@@ -84,6 +84,7 @@ interface OcurrencesContextState {
   setUniqueSelectedItem(ocurrence: Ocurrence): void;
   createOcurrence(position: Position): void;
   deleteOcurrence(ocurrence: Ocurrence): Promise<void>;
+  getOcurrenceById(id: string): Promise<Ocurrence | undefined>;
 }
 
 enum Options {
@@ -261,6 +262,26 @@ export const OcurrencesProvider: FC = ({ children }) => {
     }
   }
 
+  async function getOcurrenceById(id: string): Promise<Ocurrence | undefined> {
+    try {
+      const { data } = await api.get<Ocurrence>(`/ocurrences/${id}`);
+
+      return {
+        ...data,
+        formattedDate: getFormattedDate(new Date(data.ocurred_at)),
+      };
+    } catch (err) {
+      if (err?.response?.status === 401) {
+        toast.error('Realize o login para realizar esta requisição.');
+
+        signOut();
+        history.push('/login');
+      }
+    }
+
+    return undefined;
+  }
+
   return (
     <OcurrencesContext.Provider
       value={{
@@ -272,6 +293,7 @@ export const OcurrencesProvider: FC = ({ children }) => {
         createOcurrence,
         getMyOcurrences,
         deleteOcurrence,
+        getOcurrenceById,
       }}
     >
       {children}

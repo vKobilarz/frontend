@@ -43,28 +43,54 @@ const UpdateOcurrence: FC = () => {
   const formRef = useRef<FormHandles>(null);
   const history = useHistory();
   const { signOut } = useAuth();
-  const { newOcurrencePosition, ocurrences } = useOcurrences();
+  const {
+    newOcurrencePosition,
+    ocurrences,
+    getOcurrenceById,
+  } = useOcurrences();
 
   useEffect(() => {
-    const url = history.location.pathname.split('/');
-    const id = url[url.length - 1];
+    async function fetchData() {
+      try {
+        const url = history.location.pathname.split('/');
+        const id = url[url.length - 1];
 
-    const ocurrence = ocurrences.find(o => o._id === id);
+        const ocurrence = await getOcurrenceById(id);
 
-    if (!ocurrence) {
-      history.push('/ocurrences');
+        console.log(ocurrence);
+
+        if (!ocurrence) {
+          history.push('/ocurrences');
+        }
+
+        setInitialdata({
+          ...ocurrence,
+          // @ts-ignore
+          ocurred_at: ocurrence?.formattedDate,
+          // @ts-ignore
+          zipCode: ocurrence?.zip_code,
+        });
+
+        setAnonymous(ocurrence?.anonymous || false);
+        setType(ocurrence?.type || '');
+      } catch (err) {
+        if (err.response.status === 400) {
+          toast.error(err.response.data.error);
+        } else if (err.response.status === 401) {
+          toast.error('Realize o login para realizar esta requisição.');
+          history.push('/login');
+        } else {
+          toast.error(
+            'Ocorreu um erro inesperado. Verifique o console para mais informações.',
+          );
+          console.log(err);
+          console.log(err.response);
+        }
+      }
     }
 
-    setInitialdata({
-      ...ocurrence,
-      // @ts-ignore
-      ocurred_at: ocurrence?.formattedDate,
-      // @ts-ignore
-      zipCode: ocurrence?.zip_code,
-    });
-    setAnonymous(ocurrence?.anonymous || false);
-    setType(ocurrence?.type || '');
-  }, [history.location.pathname, ocurrences, history]);
+    fetchData();
+  }, [history.location.pathname, ocurrences, history, getOcurrenceById]);
 
   const handleSubmit = useCallback(
     async (formData: OcurrenceData) => {
