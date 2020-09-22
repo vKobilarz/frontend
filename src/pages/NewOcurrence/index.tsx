@@ -36,7 +36,7 @@ interface OcurrenceData {
 }
 
 const NewOcurrence: FC = () => {
-  const [type, setType] = useState('');
+  const [type, setType] = useState('assalto');
   const [anonymous, setAnonymous] = useState(false);
   const formRef = useRef<FormHandles>(null);
   const history = useHistory();
@@ -64,10 +64,10 @@ const NewOcurrence: FC = () => {
           description: Yup.string().required('Descrição obrigatória'),
           type: Yup.string().required(),
           anonymous: Yup.string().required(),
-          zipCode: Yup.string(),
-          city: Yup.string(),
-          neighborhood: Yup.string(),
-          street: Yup.string(),
+          zipCode: Yup.string().required('CEP obrigatório'),
+          city: Yup.string().required('Cidade obrigatória'),
+          neighborhood: Yup.string().required('Bairro obrigatória'),
+          street: Yup.string().required('Rua obrigatória'),
           latitude: Yup.number().required('Latitude obrigatória'),
           longitude: Yup.number().required('Longitude obrigatória'),
           complement: Yup.string(),
@@ -172,6 +172,7 @@ const NewOcurrence: FC = () => {
               type="radio"
               value="assalto"
               onChange={e => setType(e.target.value)}
+              checked={type === 'assalto'}
             />
             <span />
             Assalto
@@ -182,6 +183,7 @@ const NewOcurrence: FC = () => {
               type="radio"
               value="agressao"
               onChange={e => setType(e.target.value)}
+              checked={type === 'agressao'}
             />
             <span />
             Agressão
@@ -192,6 +194,7 @@ const NewOcurrence: FC = () => {
               type="radio"
               value="covid"
               onChange={e => setType(e.target.value)}
+              checked={type === 'covid'}
             />
             <span />
             Covid 19
@@ -202,6 +205,7 @@ const NewOcurrence: FC = () => {
               type="radio"
               value="pertubacao"
               onChange={e => setType(e.target.value)}
+              checked={type === 'pertubacao'}
             />
             <span />
             Pertubação
@@ -212,6 +216,7 @@ const NewOcurrence: FC = () => {
               type="radio"
               value="homicidio"
               onChange={e => setType(e.target.value)}
+              checked={type === 'homicidio'}
             />
             <span />
             Homicídio
@@ -222,6 +227,7 @@ const NewOcurrence: FC = () => {
               type="radio"
               value="atividade_suspeita"
               onChange={e => setType(e.target.value)}
+              checked={type === 'atividade_suspeita'}
             />
             <span />
             Atividade Suspeita
@@ -232,6 +238,7 @@ const NewOcurrence: FC = () => {
               type="radio"
               value="acidente"
               onChange={e => setType(e.target.value)}
+              checked={type === 'acidente'}
             />
             <span />
             Acidente
@@ -242,6 +249,7 @@ const NewOcurrence: FC = () => {
               type="radio"
               value="desaparecimento"
               onChange={e => setType(e.target.value)}
+              checked={type === 'desaparecimento'}
             />
             <span />
             Desaparecimento
@@ -252,6 +260,7 @@ const NewOcurrence: FC = () => {
               type="radio"
               value="animal_perdido"
               onChange={e => setType(e.target.value)}
+              checked={type === 'animal_perdido'}
             />
             <span />
             Animal Perdido
